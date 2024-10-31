@@ -1,0 +1,28 @@
+RMSE,Score,Model_spec,sequence_len,feature_num,attention_type,cell_type,fc_activation,rnn_num_layers,hidden_dim,lstm_dim,fc_layer_dim,feature_head_num,sequence_head_num,fc_dropout,lr,validation_rate,batch_size,patience,max_epochs,save_attention_weights,dataset_root,sub_dataset,norm_type,max_rul,cluster_operations,norm_by_operations,use_max_rul_on_test,bidirectional,gpus,exclude_cols
+15.46030712,1096.73584,DAT-RUL,20,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+15.46030712,1096.73645,DAT-RUL,20,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+15.46030807,1096.73584,DAT-RUL,20,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+14.16541672,966.713623,DAT-RUL,25,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+14.16541576,966.713501,DAT-RUL,25,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+14.16541576,966.713623,DAT-RUL,25,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+13.65105629,835.2076416,DAT-RUL,30,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+13.65104866,835.2056885,DAT-RUL,30,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+13.65106106,835.2004395,DAT-RUL,30,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+13.07368946,770.7967529,DAT-RUL,35,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+13.07368851,770.796875,DAT-RUL,35,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+13.07368755,770.7969971,DAT-RUL,35,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+12.49083328,635.8034668,DAT-RUL,40,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+12.49075127,635.7974243,DAT-RUL,40,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+12.4908371,635.8042603,DAT-RUL,40,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+12.25595188,647.5491333,DAT-RUL,45,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+12.25594902,647.5489502,DAT-RUL,45,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+12.25592041,647.5460205,DAT-RUL,45,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+12.77694607,671.1138916,DAT-RUL,50,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+12.77694798,671.1125488,DAT-RUL,50,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"
+12.77695942,671.1155396,DAT-RUL,50,20,deg_attention,slstm,gelu,1,40,16,32,2,2,0.25,0.001,0.2,128,50,200,FALSE,D:\Datasets\CMAPSS\raw_data,FD002,z-score,125,TRUE,TRUE,TRUE,FALSE,1,"['s13', 's16', 's18', 's19']"

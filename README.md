@@ -45,6 +45,7 @@ python ./test_script/FD001_Test.py --dataset-root /your/path/to/CMAPSS --sub-dat
 ```
 ## Acknowledgement
 We appreciate the following GitHub repos a lot for their valuable code and efforts.
-  -lucidrains (https://github.com/lucidrains/iTransformer)
-  -LazyLZ (https://github.com/LazyLZ/multi-head-attention-for-rul-estimation)
-  -muditbhargava66(https://github.com/muditbhargava66/PyxLSTM)
+
+- lucidrains (https://github.com/lucidrains/iTransformer)
+- LazyLZ (https://github.com/LazyLZ/multi-head-attention-for-rul-estimation)
+- muditbhargava66(https://github.com/muditbhargava66/PyxLSTM)

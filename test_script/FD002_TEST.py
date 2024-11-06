@@ -56,51 +56,35 @@ def load_model(checkpoint_path, model_kwargs, lr):
     return model
 
 def main():
-    parser = argparse.ArgumentParser(description='DegFormer+sLSTM')
-
-    parser.add_argument('--Model-spec', type=str, default="DAT-RUL")  # done AOA + Sequence-> Feature
-    parser.add_argument('--sequence-len', type=int, default=40)  # done
-    parser.add_argument('--feature-num', type=int, default=20)  # done
-
+    parser = argparse.ArgumentParser(description='DAT+sLSTM')
+    parser.add_argument('--Model-spec', type=str, default="DA-RUL")
+    parser.add_argument('--sequence-len', type=int, default=40)
+    parser.add_argument('--feature-num', type=int, default=20)
     parser.add_argument('--attention-type', default='deg_attention', action='append', help="'deg_attention', 'vanilla_attention'")
-    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm')  # done
+    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm')
     parser.add_argument('--fc-activation', type=str, default='gelu', help='relu, tanh, gelu, silu, leakyrelu')
-
-    parser.add_argument('--rnn-num-layers', type=int, default=1)  # The number of RNN layers (d_hidden layers).
-
-    parser.add_argument('--hidden-dim', type=int, default=40,
-                        help='hidden dims(d_model)')  # The dimensionality of the hidden state (d_model).
-    parser.add_argument('--lstm-dim', type=int, default=16, help='lstm hidden dims')
-    parser.add_argument('--fc-layer-dim', type=int,
-                        default=32)  # The dimensionality of the fully connected layer (d_ff).
-
-    # parser.add_argument('--hidden-dim', type=int, default=40, help='hidden dims(d_model)')  # The dimensionality of the hidden state (d_model).
-    # parser.add_argument('--lstm-dim', type=int, default=16, help='lstm hidden dims')
-    # parser.add_argument('--fc-layer-dim', type=int, default=64)  # The dimensionality of the fully connected layer (d_ff).
-
-    parser.add_argument('--feature-head-num', type=int, default=2)  # done
-    parser.add_argument('--sequence-head-num', type=int, default=2)
-    parser.add_argument('--fc-dropout', type=float, default=0.25)  # done
-
-    parser.add_argument('--lr', type=float, default=1e-03)  # done
+    parser.add_argument('--rnn-num-layers', type=int, default=1)
+    parser.add_argument('--hidden-dim', type=int, default=40,  help='hidden dims(45|64)')
+    parser.add_argument('--lstm-dim', type=int, default=16, help='lstm hidden dims(16|32)')
+    parser.add_argument('--fc-layer-dim', type=int, default=32, help='fully connected layer dimension dims(32|128)')
+    parser.add_argument('--feature-head-num', type=int, default=2, help='(1|2')
+    parser.add_argument('--sequence-head-num', type=int, default=2, help='(1|2)')
+    parser.add_argument('--fc-dropout', type=float, default=0.25, help='(0.20|0.25)')
+    parser.add_argument('--lr', type=float, default=1e-03)
     parser.add_argument('--validation-rate', type=float, default=0.2, help='validation set ratio of train set')
     parser.add_argument('--batch-size', type=int, default=128)  # done
-    parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')  # done
+    parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')
     parser.add_argument('--max-epochs', type=int, default=200)
-
-
     parser.add_argument('--save-attention-weights', action='store_true', default=False)
-    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data',
-                        help='The dir of CMAPSS dataset')
-    parser.add_argument('--sub-dataset', type=str, default='FD002', help='FD001/2/3/4')
-    parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')  # done
+    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data', help='The dir of CMAPSS dataset')
+    parser.add_argument('--sub-dataset', type=str, default='FD002', help='(FD002|FD004)')
+    parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')
     parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL')  # done
     parser.add_argument('--cluster-operations', action='store_true', default=True)
     parser.add_argument('--norm-by-operations', action='store_true', default=True)
     parser.add_argument('--use-max-rul-on-test', action='store_true', default=True)
     parser.add_argument('--bidirectional', action='store_true', default=False)
     parser.add_argument('--gpus', type=int, default=1)
-    # parser.add_argument('--no-cuda', action='store_true', default=False, help='disables CUDA training')
     parser.add_argument('--exclude_cols', default=['s13', 's16', 's18', 's19'], action='append', help="cols to exclude")
 
     args = parser.parse_args()

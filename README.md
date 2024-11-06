@@ -2,7 +2,7 @@
 Degradation-Augmented: Degradation-Augmented Transformer for Enhanced RUL Estimation using Multi-fault Mode Sensor Data
 
 <p align="center">
-  <img src=".\pics\structure.png" height = "350" alt="" align=center />
+  <img src=".\pics\Architecture.png" height = "350" alt="" align=center />
 </p>
 
 ## Requirements

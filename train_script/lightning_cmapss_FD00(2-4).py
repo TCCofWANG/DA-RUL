@@ -7,21 +7,22 @@ from dataset import CMAPSSDataset
 from torch.nn import functional as F
 import pandas as pd
 from pytorch_lightning.metrics.functional import mean_squared_error
+import numpy as np
 
 from Experiment.DAT_Experiment import DAT_Experiment
 from utils.RiskAwareLoss import RiskAwareLoss
 from utils.log_result import log_args_and_metrics_to_csv
 from utils.metrics import score
 import random
-import numpy as np
+
 
 class Module(pl.LightningModule):
-    def __init__(self, lr, **kwargs):
+    def __init__(self, lr, alpha=1.50, **kwargs):
         super(Module, self).__init__()
-        #self.device ='cuda'
+        # self.device ='cuda'
         self.net = DAT_Experiment(**kwargs)
         self.lr = lr
-        #self.risk_aware_loss = RiskAwareLoss(1.5, 1, -13, 10)
+        #self.risk_aware_loss = RiskAwareLoss(1.2, 1, -13, 10)
         # print(self.net)
         # print('lr', self.lr)
 
@@ -30,8 +31,6 @@ class Module(pl.LightningModule):
 
     def training_step(self, batch, batch_idx):
         x, y, _ = batch
-        #print('x', x)
-        #print('y', y)
         y_pred = self.net(x)
         loss = F.mse_loss(y_pred, y)
         #loss = self.risk_aware_loss(y_pred, y)
@@ -48,7 +47,6 @@ class Module(pl.LightningModule):
     def test_step(self, batch, batch_idx, reduction='sum'):
         x, y, id = batch
         x = self.net(x)
-        #x = x.cpu()
         return torch.cat([id, torch.floor(x), y], dim=1)
 
     def test_epoch_end(self, step_outputs):
@@ -62,7 +60,7 @@ class Module(pl.LightningModule):
         predictions = t[:, 1]  # Assuming these are your model predictions
         actuals = t[:, 2]  # Actual values
         df = pd.DataFrame({'Prediction': predictions, 'Actual': actuals})
-        df.to_csv('../results/FD004_predictions.csv', index=False)
+        df.to_csv('../results/FD002_predictions.csv', index=False)
 
     def validation_epoch_end(self, val_step_outputs):
         t = torch.stack(val_step_outputs)
@@ -76,48 +74,43 @@ class Module(pl.LightningModule):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='DegFormer')
-    parser.add_argument('--Model-spec', type=str, default="DAT-RUL+sLSTM")  # Trans+Itrans>MetaAttentionFS
-    parser.add_argument('--sequence-len', type=int, default=40)  # done
-    parser.add_argument('--feature-num', type=int, default=20)  # done
-
+    parser = argparse.ArgumentParser(description='DAT+sLSTM')
+    parser.add_argument('--Model-spec', type=str, default="DA-RUL")
+    parser.add_argument('--sequence-len', type=int, default=40)
+    parser.add_argument('--feature-num', type=int, default=20)
     parser.add_argument('--attention-type', default='deg_attention', action='append', help="'deg_attention', 'vanilla_attention'")
-    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm')  # done
+    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm')
     parser.add_argument('--fc-activation', type=str, default='gelu', help='relu, tanh, gelu, silu, leakyrelu')
-
-    parser.add_argument('--rnn-num-layers', type=int, default=1)  # The number of RNN layers.
-    parser.add_argument('--hidden-dim', type=int, default=64, help='hidden dims(d_model)')  # The dimensionality of the hidden state (d_model).
-    parser.add_argument('--lstm-dim', type=int, default=32, help='lstm hidden dims')
-    parser.add_argument('--fc-layer-dim', type=int, default=128)  # The dimensionality of the fully connected layer (d_ff).
-
-    parser.add_argument('--feature-head-num', type=int, default=1)  # done
-    parser.add_argument('--sequence-head-num', type=int, default=1)  # done
-    parser.add_argument('--fc-dropout', type=float, default=0.25)  # done
-
+    parser.add_argument('--rnn-num-layers', type=int, default=1)
+    parser.add_argument('--hidden-dim', type=int, default=40,  help='hidden dims(45|64)')
+    parser.add_argument('--lstm-dim', type=int, default=16, help='lstm hidden dims(16|32)')
+    parser.add_argument('--fc-layer-dim', type=int, default=32, help='fully connected layer dimension dims(32|128)')
+    parser.add_argument('--feature-head-num', type=int, default=2, help='(1|2')
+    parser.add_argument('--sequence-head-num', type=int, default=2, help='(1|2)')
+    parser.add_argument('--fc-dropout', type=float, default=0.25, help='(0.20|0.25)')
+    parser.add_argument('--lr', type=float, default=1e-03)
+    parser.add_argument('--validation-rate', type=float, default=0.2, help='validation set ratio of train set')
+    parser.add_argument('--batch-size', type=int, default=128)  # done
+    parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')
+    parser.add_argument('--max-epochs', type=int, default=200)
     parser.add_argument('--save-attention-weights', action='store_true', default=False)
     parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data', help='The dir of CMAPSS dataset')
-    parser.add_argument('--sub-dataset', type=str, default='FD004', help='FD001/2/3/4')
-    parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')#done
-    parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL')#done
+    parser.add_argument('--sub-dataset', type=str, default='FD002', help='(FD002|FD004)')
+    parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')
+    parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL')  # done
     parser.add_argument('--cluster-operations', action='store_true', default=True)
     parser.add_argument('--norm-by-operations', action='store_true', default=True)
     parser.add_argument('--use-max-rul-on-test', action='store_true', default=True)
-    parser.add_argument('--validation-rate', type=float, default=0.2, help='validation set ratio of train set')
-    parser.add_argument('--batch-size', type=int, default=128) #done
-    parser.add_argument('--lr', type=float, default=1e-03) #done
-    parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')#done
-    parser.add_argument('--max-epochs', type=int, default=150)
-    parser.add_argument('--gpus', type=int, default=1)
     parser.add_argument('--bidirectional', action='store_true', default=False)
-    parser.add_argument('--shuffle', default=False)
+    parser.add_argument('--gpus', type=int, default=1)
     parser.add_argument('--exclude_cols', default=['s13', 's16', 's18', 's19'], action='append', help="cols to exclude")
 
     args = parser.parse_args()
     model_kwargs = {
         'sequence_len': args.sequence_len,
         'feature_num': args.feature_num,
-        'lstm_dim': args.lstm_dim,
         'hidden_dim': args.hidden_dim,
+        'lstm_dim': args.lstm_dim,
         'cell_type': args.cell_type,
         'fc_layer_dim': args.fc_layer_dim,
         'rnn_num_layers': args.rnn_num_layers,
@@ -139,15 +132,14 @@ def main():
         norm_by_operations=args.norm_by_operations,
         use_max_rul_on_test=args.use_max_rul_on_test,
         validation_rate=args.validation_rate,
-        return_id=True,
         exclude_cols=args.exclude_cols,
+        return_id=True,
         use_only_final_on_test=not args.save_attention_weights,
         loader_kwargs={'batch_size': args.batch_size}
     )
 
     model = Module(
         lr=args.lr,
-        #gpus=1
         **model_kwargs
     )
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
@@ -165,9 +157,9 @@ def main():
     )
 
     trainer = pl.Trainer(
-       default_root_dir='../checkpoints/{0}/'.format(args.sub_dataset),
+        default_root_dir='../checkpoints/{0}/'.format(args.sub_dataset),
+        gpus=args.gpus,
         max_epochs=args.max_epochs,
-        gpus=1,
         callbacks=[early_stop_callback, checkpoint_callback],
         # checkpoint_callback=False,
         # logger=False,
@@ -177,10 +169,12 @@ def main():
     result = trainer.test(test_dataloaders=test_loader)
     result = result[0]
     log_file_path = "../results/{0}_experiment_results.csv".format(args.sub_dataset)
-    log_args_and_metrics_to_csv(log_file_path, args, Exe_Time=datetime.now().strftime("%d/%m/%Y %H:%M:%S"), RMSE=result['test_rmse'],Score=result['test_score'])
+    log_args_and_metrics_to_csv(log_file_path, args, Exe_Time=datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+                                RMSE=result['test_rmse'], Score=result['test_score'])
+
 
 if __name__ == '__main__':
-    seed = 42
+    seed = 8
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)

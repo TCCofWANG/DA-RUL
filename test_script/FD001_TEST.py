@@ -56,37 +56,44 @@ def load_model(checkpoint_path, model_kwargs, lr):
     return model
 
 def main():
+    seed = 8
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)
+    random.seed(seed)
+    np.random.seed(seed)
+
     parser = argparse.ArgumentParser( description=__doc__)
-    parser.add_argument('--Model-spec', type=str, default="DegFormer+sLSTM")  # Trans+Itrans>MetaAttentionFS
-    parser.add_argument('--sequence-len', type=int, default=30)  # done
-    parser.add_argument('--feature-num', type=int, default=16)  # done
+    parser.add_argument('--Model-spec', type=str, default="DAT+sLSTM")
+    parser.add_argument('--sequence-len', type=int, default=30, help='(30|40) sequence length)')
+    parser.add_argument('--feature-num', type=int, default=16)
 
     parser.add_argument('--attention-type', default='deg_attention', action='append', help="'deg_attention', 'vanilla_attention'")
-    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm, slstm, gru or rnn')  # done
+    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm')
     parser.add_argument('--fc-activation', type=str, default='gelu', help='relu, gelu, silu')
 
-    parser.add_argument('--rnn-num-layers', type=int, default=1)  # The number of RNN layers.
+    parser.add_argument('--rnn-num-layers', type=int, default=1)
 
-    parser.add_argument('--hidden-dim', type=int, default=32, help='hidden dims(d_model)')  # The dimensionality of the hidden state (d_model).
+    parser.add_argument('--hidden-dim', type=int, default=32, help='(32|40)hidden dims(d_model)')
     parser.add_argument('--lstm-dim', type=int, default=16, help='lstm hidden dims')
-    parser.add_argument('--fc-layer-dim', type=int,default=32)  # The dimensionality of the fully connected layer (d_ff).
+    parser.add_argument('--fc-layer-dim', type=int,default=32, help='(32|64)')
 
-    parser.add_argument('--feature-head-num', type=int, default=2)  # done
-    parser.add_argument('--sequence-head-num', type=int, default=2)  # done
-    parser.add_argument('--fc-dropout', type=float, default=0.25)  # done
+    parser.add_argument('--feature-head-num', type=int, default=2)
+    parser.add_argument('--sequence-head-num', type=int, default=2)
+    parser.add_argument('--fc-dropout', type=float, default=0.25)
 
-    parser.add_argument('--lr', type=float, default=1e-03)  # done
+    parser.add_argument('--lr', type=float, default=1e-03)
     parser.add_argument('--validation-rate', type=float, default=0.2, help='validation set ratio of train set')
-    parser.add_argument('--batch-size', type=int, default=128)  # done
-    parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')  # done
+    parser.add_argument('--batch-size', type=int, default=128)
+    parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')
     parser.add_argument('--max-epochs', type=int, default=150)
 
     parser.add_argument('--bidirectional', action='store_true', default=False)
     parser.add_argument('--save-attention-weights', action='store_true', default=False)
     parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data',  help='The dir of CMAPSS dataset')
-    parser.add_argument('--sub-dataset', type=str, default='FD001', help='FD001/2/3/4')
-    parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')  # done
-    parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL upper limit')  # done
+    parser.add_argument('--sub-dataset', type=str, default='FD001', help='FD001/3')
+    parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')
+    parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL upper limit')
     parser.add_argument('--cluster-operations', action='store_true', default=False)
     parser.add_argument('--norm-by-operations', action='store_true', default=False)
     parser.add_argument('--use-max-rul-on-test', action='store_true', default=True)
@@ -129,15 +136,6 @@ def main():
         use_only_final_on_test=not args.save_attention_weights,
         loader_kwargs={'batch_size': args.batch_size}
     )
-
-    # Load model checkpoint and test
-    # ckpt_file = 'checkpoint-epoch=38-val_rmse=10.6455'
-    # checkpoint_path = 'checkpoints/lightning_logs/version_49/checkpoints/{}.ckpt'.format(ckpt_file)
-    # model = load_model(checkpoint_path, model_kwargs, lr=args.lr)
-    #
-    # trainer = pl.Trainer(gpus=args.gpus)
-    # result = trainer.test(model, test_dataloaders=test_loader)
-    # print(result)
 
     # Directory where the checkpoints are stored
     subset = 'FD001'
@@ -183,10 +181,4 @@ def main():
         print(f'Result for {filename}: {result}')
 
 if __name__ == '__main__':
-    seed = 42
-    torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
-    torch.cuda.manual_seed_all(seed)
-    random.seed(seed)
-    np.random.seed(seed)
     main()

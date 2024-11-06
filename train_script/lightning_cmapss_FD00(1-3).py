@@ -10,7 +10,6 @@ import pandas as pd
 from pytorch_lightning.metrics.functional import mean_squared_error
 
 from Experiment.DAT_Experiment import DAT_Experiment
-from model.MLPMixer import DualMLPMixer
 
 from utils.log_result import log_args_and_metrics_to_csv
 from utils.metrics import score
@@ -24,7 +23,7 @@ class Module(pl.LightningModule):
     def __init__(self, lr, **kwargs):
         super(Module, self).__init__()
         # self.device ='cuda'
-        self.net = DualMLPMixer()
+        self.net = DAT_Experiment(**kwargs)
         self.lr = lr
         # print(self.net)
         # print('lr', self.lr)
@@ -63,11 +62,11 @@ class Module(pl.LightningModule):
         rul_predicted = t[:, 1]  # Assuming these are your model predictions
         rul_true = t[:, 2]  # Actual values
         rmse = torch.sqrt(mean_squared_error(rul_predicted, rul_true))
-        s = score(rul_predicted, rul_true)
+        s = score(rul_predicted,rul_true)
         self.log('test_rmse', rmse)
         self.log('test_score', s)
         # Example: Save predictions
-
+        
         df = pd.DataFrame({'Prediction': rul_predicted, 'Actual': rul_true})
         df.to_csv('../results/FD001_predictions.csv', index=False)
 
@@ -78,49 +77,39 @@ class Module(pl.LightningModule):
 
 
 def main(args):
-    mixer_model_kwargs = {
-        'window_size': args.sequence_len,
-        'in_features': args.feature_num,
-        'hidden_dim': args.hidden_dim,
-        'num_layers': args.rnn_num_layers,
-        'dropout': args.fc_dropout,
-        'device': "cuda:0",
-        'label_norm': False,
-        'filter_size': 0
 
+    model_kwargs = {
+        'sequence_len': args.sequence_len,
+        'feature_num': args.feature_num,
+        'hidden_dim': args.hidden_dim,
+        'lstm_dim': args.lstm_dim,
+        'cell_type': args.cell_type,
+        'fc_layer_dim': args.fc_layer_dim,
+        'rnn_num_layers': args.rnn_num_layers,
+        'output_dim': 1,
+        'fc_activation': args.fc_activation,
+        'attention_type': args.attention_type,
+        'bidirectional': args.bidirectional,
+        'feature_head_num': args.feature_head_num,
+        'sequence_head_num': args.sequence_head_num,
+        'fc_dropout': args.fc_dropout
     }
-    # model_kwargs = {
-    #     'sequence_len': args.sequence_len,
-    #     'feature_num': args.feature_num,
-    #     'hidden_dim': args.hidden_dim,
-    #     'lstm_dim': args.lstm_dim,
-    #     'cell_type': args.cell_type,
-    #     'fc_layer_dim': args.fc_layer_dim,
-    #     'rnn_num_layers': args.rnn_num_layers,
-    #     'output_dim': 1,
-    #     'fc_activation': args.fc_activation,
-    #     'attention_type': args.attention_type,
-    #     'bidirectional': args.bidirectional,
-    #     'feature_head_num': args.feature_head_num,
-    #     'sequence_head_num': args.sequence_head_num,
-    #     'fc_dropout': args.fc_dropout
-    # }
-    # DAST_model_kwargs = {
-    #     'dim_val': args.hidden_dim,  # General hidden dimension
-    #     'dim_val_s': args.hidden_dim,  # Hidden dimension for the spatial transformer (feature attention)
-    #     'dim_val_t': args.hidden_dim,  # Hidden dimension for the temporal transformer (sequence attention)
-    #     'dim_attn': args.feature_head_num,  # General attention dimension
-    #     'dim_attn_s': args.feature_head_num,  # Number of attention heads for feature attention
-    #     'dim_attn_t': args.sequence_head_num,  # Number of attention heads for sequence attention
-    #     'time_step': args.sequence_len,  # Length of the input sequences
-    #     'input_size': args.feature_num,  # Number of input features
-    #     'dec_seq_len': 10,  # Decoder sequence length (set explicitly)
-    #     'out_seq_len': 1,  # Output sequence length (set explicitly)
-    #     'n_encoder_layers': args.rnn_num_layers,  # Number of RNN layers in the encoder
-    #     'n_decoder_layers': 1,  # Number of RNN layers in the decoder (set explicitly)
-    #     'n_heads': 1,  # Number of attention heads (set explicitly)
-    #     'dropout': args.fc_dropout  # Dropout rate for the fully connected layer
-    # }
+    DAST_model_kwargs = {
+        'dim_val': args.hidden_dim,  # General hidden dimension
+        'dim_val_s': args.hidden_dim,  # Hidden dimension for the spatial transformer (feature attention)
+        'dim_val_t': args.hidden_dim,  # Hidden dimension for the temporal transformer (sequence attention)
+        'dim_attn': args.feature_head_num,  # General attention dimension
+        'dim_attn_s': args.feature_head_num,  # Number of attention heads for feature attention
+        'dim_attn_t': args.sequence_head_num,  # Number of attention heads for sequence attention
+        'time_step': args.sequence_len,  # Length of the input sequences
+        'input_size': args.feature_num,  # Number of input features
+        'dec_seq_len': 10,  # Decoder sequence length (set explicitly)
+        'out_seq_len': 1,  # Output sequence length (set explicitly)
+        'n_encoder_layers': args.rnn_num_layers,  # Number of RNN layers in the encoder
+        'n_decoder_layers': 1,  # Number of RNN layers in the decoder (set explicitly)
+        'n_heads': 1,  # Number of attention heads (set explicitly)
+        'dropout': args.fc_dropout  # Dropout rate for the fully connected layer
+    }
 
     train_loader, test_loader, valid_loader = CMAPSSDataset.get_data_loaders(
         dataset_root=args.dataset_root,
@@ -134,19 +123,15 @@ def main(args):
         validation_rate=args.validation_rate,
         exclude_cols=args.exclude_cols,
         return_id=True,
-        use_only_final_on_test=False,
+        use_only_final_on_test=not args.save_attention_weights,
         loader_kwargs={'batch_size': args.batch_size}
     )
 
     model = Module(
         lr=args.lr,
         # gpus=1
-        **mixer_model_kwargs
+        **model_kwargs
     )
-
-    # model = train_model(model=model, train_set=train, test_set=test, val_set=val,
-    #                     model_flag=model_flag, batch_size=batch_size, visual_sample=visual_samples, contra=contra)
-
     early_stop_callback = pl.callbacks.early_stopping.EarlyStopping(
         monitor='val_rmse',
         min_delta=0.00,
@@ -209,28 +194,35 @@ if __name__ == '__main__':
     random.seed(seed)
     np.random.seed(seed)
 
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--Model-spec', type=str, default="MLPMixer")  # Trans+Itrans>MetaAttentionFS
-    parser.add_argument('--sequence-len', type=int, default=30)  # done
-    parser.add_argument('--feature-num', type=int, default=16)  # done
+    parser = argparse.ArgumentParser( description=__doc__)
+    parser.add_argument('--Model-spec', type=str, default="DAT+sLSTM")
+    parser.add_argument('--sequence-len', type=int, default=30, help='(30|40) sequence length)')
+    parser.add_argument('--feature-num', type=int, default=16)
 
-    parser.add_argument('--hidden-dim', type=int, default=32, help='hidden dims(d_model)')  # The dimensionality of the hidden state (d_model).
+    parser.add_argument('--attention-type', default='deg_attention', action='append', help="'deg_attention', 'vanilla_attention'")
+    parser.add_argument('--cell-type', type=str, default='slstm', help='lstm, slstm')
+    parser.add_argument('--fc-activation', type=str, default='gelu', help='relu, gelu, silu')
 
-    parser.add_argument('--rnn-num-layers', type=int, default=6)  # The number of RNN layers.
+    parser.add_argument('--rnn-num-layers', type=int, default=1)  # The number of RNN layers.
 
+    parser.add_argument('--hidden-dim', type=int, default=32, help='(32|40)hidden dims(d_model)')  # The dimensionality of the hidden state (d_model).
+    parser.add_argument('--lstm-dim', type=int, default=16, help='lstm hidden dims')
+    parser.add_argument('--fc-layer-dim', type=int,default=32, help='(32|64)')  # The dimensionality of the fully connected layer (d_ff).
 
+    parser.add_argument('--feature-head-num', type=int, default=2)  # done
+    parser.add_argument('--sequence-head-num', type=int, default=2)  # done
     parser.add_argument('--fc-dropout', type=float, default=0.25)  # done
 
     parser.add_argument('--lr', type=float, default=1e-03)  # done
     parser.add_argument('--validation-rate', type=float, default=0.2, help='validation set ratio of train set')
-
-    parser.add_argument('--batch-size', type=int, default=1024)  # done
+    parser.add_argument('--batch-size', type=int, default=128)  # done
     parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')  # done
     parser.add_argument('--max-epochs', type=int, default=150)
 
-
-    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data', help='The dir of CMAPSS dataset')
-    parser.add_argument('--sub-dataset', type=str, default='FD002', help='FD001/2/3/4')
+    parser.add_argument('--bidirectional', action='store_true', default=False)
+    parser.add_argument('--save-attention-weights', action='store_true', default=False)
+    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data',  help='The dir of CMAPSS dataset')
+    parser.add_argument('--sub-dataset', type=str, default='FD001', help='FD001/3')
     parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')  # done
     parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL upper limit')  # done
     parser.add_argument('--cluster-operations', action='store_true', default=False)

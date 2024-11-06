@@ -32,7 +32,8 @@ We compare our model with 15 baselines, including THOC, InterFusion, etc. **Gene
 The `--dataset-root` should be updated according to your data folder. 
 
 The data can be downloaded here.
--NASA CMAPSS Jet Engine Simulated Data: (https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data)
+
+NASA CMAPSS Jet Engine Simulated Data: (https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data)
 ### Train & Evaluate
 ```
 python ./train_script/lightning_cmapss_FD001.py --dataset-root /your/path/to/CMAPSS --sub-dataset FD001

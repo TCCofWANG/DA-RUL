@@ -42,3 +42,8 @@ python ./train_script/lightning_cmapss_FD001.py --dataset-root /your/path/to/CMA
 ```
 python ./test_script/FD001_Test.py --dataset-root /your/path/to/CMAPSS --sub-dataset FD001
 ```
+## Acknowledgement
+We appreciate the following GitHub repos a lot for their valuable code and efforts.
+-lucidrains (https://github.com/lucidrains/iTransformer)
+-LazyLZ (https://github.com/LazyLZ/multi-head-attention-for-rul-estimation)
+-muditbhargava66(https://github.com/muditbhargava66/PyxLSTM)

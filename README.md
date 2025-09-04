@@ -49,3 +49,4 @@ We appreciate the following GitHub repos a lot for their valuable code and effor
 - lucidrains (https://github.com/lucidrains/iTransformer)
 - LazyLZ (https://github.com/LazyLZ/multi-head-attention-for-rul-estimation)
 - muditbhargava66(https://github.com/muditbhargava66/PyxLSTM)
+- 

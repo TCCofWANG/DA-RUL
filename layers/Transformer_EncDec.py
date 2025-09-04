@@ -5,8 +5,6 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from model.utils import ACTIVATION_MAP
-
-
 #from PatchTST_layers import *
 
 

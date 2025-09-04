@@ -6,6 +6,7 @@ import math
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+
 def a_norm(Q, K):
     m = torch.matmul(Q, K.transpose(2, 1).float())
     m /= torch.sqrt(torch.tensor(Q.shape[-1], dtype=torch.float).to(Q.device))

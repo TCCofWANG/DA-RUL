@@ -6,7 +6,6 @@ import numpy as np
 import torch
 import pytorch_lightning as pl
 from pytorch_lightning.metrics.functional import mean_squared_error
-
 import sys
 import os
 # Get the parent directory of the current directory and add it to sys.path

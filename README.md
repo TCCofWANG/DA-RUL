@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 ## Main Result
 
-We compare our model with 15 baselines, including Dual_Mixer, FC-STGNN, CTNet, etc. **DA-RUL achieves SOTA.**
+We compare our model with 14 baselines, including Dual_Mixer, FC-STGNN, CTNet, etc. **DA-RUL achieves SOTA.**
 
 <p align="center">
 <img src=".\pics\result.png" height = "450" alt="" align=center />

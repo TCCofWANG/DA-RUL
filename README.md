@@ -1,5 +1,5 @@
-# Degradation-Augmented Transformer
-Degradation-Augmented Transformer: Degradation-Augmented Transformer for Enhanced RUL Estimation using Multi-fault Mode Sensor Data
+# Remaining Useful Life Estimation Based on Improved Attention Mechanism
+we propose the Degradation-Augmented RUL (DA-RUL) model, which incorporates distance-based similarity measures into the self-attention mechanism to emphasize geometrically significant variations. By augmenting these sequences, the model is better able to focus on critical degradation events, improving its overall predictive accuracy. Subsequently, the sLSTM model is employed to capture both temporal and local dependencies within the data. The model's performance is evaluated on NASA's jet engine run-to-failure datasets and XJTU-SY bearning datasets, demonstrating that DA-RUL not only enhances RUL estimation accuracy but also adapts effectively to diverse operating conditions with low computational complexity.
 
 <p align="center">
   <img src=".\pics\Architecture.png" height = "350" alt="" align=center />
@@ -22,7 +22,7 @@ pip install -r requirements.txt
 
 ## Main Result
 
-We compare our model with 15 baselines, including THOC, InterFusion, etc. **Generally,  Anomaly-Transformer achieves SOTA.**
+We compare our model with 15 baselines, including Dual_Mixer, FC-STGNN, CTNet, etc. **DA-RUL achieves SOTA.**
 
 <p align="center">
 <img src=".\pics\result.png" height = "450" alt="" align=center />
@@ -34,9 +34,13 @@ The `--dataset-root` should be updated according to your data folder.
 The data can be downloaded here.
 
 NASA CMAPSS Jet Engine Simulated Data: (https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data)
+
+XJTU-SY bearing Datasets: (https://biaowang.tech/xjtu-sy-bearing-datasets/)
+
 ### Train & Evaluate
 ```
 python ./train_script/lightning_cmapss_FD001.py --dataset-root /your/path/to/CMAPSS --sub-dataset FD001
+python ./train_script/xjtu_bearing.py --dataset-root /your/path/to/XJTU --sub-dataset 37
 ```
 
 ### Test & Evaluate with trained models

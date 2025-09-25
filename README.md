@@ -33,7 +33,7 @@ The `--dataset-root` should be updated according to your data folder.
 
 The data can be downloaded here.
 
-NASA CMAPSS Jet Engine Simulated Data: (https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data)
+NASA CMAPSS Jet Engine Simulated Data: ([https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6/about_data](https://data.nasa.gov/dataset/cmapss-jet-engine-simulated-data))
 
 XJTU-SY bearing Datasets: (https://biaowang.tech/xjtu-sy-bearing-datasets/)
 

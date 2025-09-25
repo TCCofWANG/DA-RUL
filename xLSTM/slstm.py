@@ -1,7 +1,6 @@
 """
 sLSTM: Scalar Long Short-Term Memory
 """
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F

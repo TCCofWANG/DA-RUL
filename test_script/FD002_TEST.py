@@ -39,6 +39,13 @@ class Module(pl.LightningModule):
         self.log('test_rmse', rmse)
         self.log('test_score', s)
 
+        if self.args.save_test:
+            enc_pred = t[:, 1].numpy()
+            gt = t[:, 2].numpy()
+            os.makedirs(self.save_path, exist_ok=True)
+            result_path = self.save_path + '/result.npz'
+            np.savez(result_path, test_preds=enc_pred, test_trues=gt, )
+
     def validation_epoch_end(self, val_step_outputs):
         t = torch.stack(val_step_outputs)
         t = torch.sum(t, dim=0)
@@ -76,7 +83,7 @@ def main():
     parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')
     parser.add_argument('--max-epochs', type=int, default=200)
     parser.add_argument('--save-attention-weights', action='store_true', default=False)
-    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data', help='The dir of CMAPSS dataset')
+    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS', help='The dir of CMAPSS dataset')
     parser.add_argument('--sub-dataset', type=str, default='FD002', help='(FD002|FD004)')
     parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')
     parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL')  # done
@@ -86,6 +93,8 @@ def main():
     parser.add_argument('--bidirectional', action='store_true', default=False)
     parser.add_argument('--gpus', type=int, default=1)
     parser.add_argument('--exclude_cols', default=['s13', 's16', 's18', 's19'], action='append', help="cols to exclude")
+    parser.add_argument('--save-test', action='store_true', default=True, help='save test predictions and ground truths to a .npz file')
+    parser.add_argument('--save-dir', type=str, default='./results', help='directory to save test results when --save-test is set')
 
     args = parser.parse_args()
 
@@ -133,7 +142,7 @@ def main():
     # print(result)
 
     # Directory where the checkpoints are stored
-    subset = 'FD002'
+    subset = args.sub_dataset
 
     try:
         lightning_logs_dir = os.path.join('./checkpoints/{0}/lightning_logs/'.format(subset))
@@ -142,7 +151,7 @@ def main():
         lightning_logs_dir = os.path.join('../checkpoints/{0}/lightning_logs/'.format(subset))
     # Initialize a dictionary to store results for each checkpoint
     results = {}
-    i=1
+    i=0
     for folder_version in os.listdir(lightning_logs_dir):
         checkpoint_dir = '{0}/{1}/checkpoints/'.format(lightning_logs_dir, folder_version)
 
@@ -161,6 +170,8 @@ def main():
 
                     # Load the model
                     model = load_model(checkpoint_path, model_kwargs, lr=args.lr)
+                    model.args = args
+                    model.save_path = os.path.join(args.save_dir, subset, folder_version)
 
                     # Initialize the Lightning Trainer
                     trainer = pl.Trainer(gpus=args.gpus)

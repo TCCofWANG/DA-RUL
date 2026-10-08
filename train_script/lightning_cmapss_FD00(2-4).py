@@ -93,8 +93,8 @@ def main():
     parser.add_argument('--batch-size', type=int, default=128)  # done
     parser.add_argument('--patience', type=int, default=50, help='Early Stop Patience')
     parser.add_argument('--max-epochs', type=int, default=200)
-    parser.add_argument('--save-attention-weights', action='store_true', default=False)
-    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data', help='The dir of CMAPSS dataset')
+    parser.add_argument('--save-attention-weights', action='store_true', default=True)
+    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS', help='The dir of CMAPSS dataset')
     parser.add_argument('--sub-dataset', type=str, default='FD002', help='(FD002|FD004)')
     parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')
     parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL')  # done

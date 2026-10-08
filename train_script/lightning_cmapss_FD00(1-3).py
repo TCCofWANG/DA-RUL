@@ -8,7 +8,6 @@ from dataset import CMAPSSDataset
 from torch.nn import functional as F
 import pandas as pd
 from pytorch_lightning.metrics.functional import mean_squared_error
-
 from Experiment.DAT_Experiment import DAT_Experiment
 
 from utils.log_result import log_args_and_metrics_to_csv
@@ -221,8 +220,8 @@ if __name__ == '__main__':
 
     parser.add_argument('--bidirectional', action='store_true', default=False)
     parser.add_argument('--save-attention-weights', action='store_true', default=False)
-    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS\\raw_data',  help='The dir of CMAPSS dataset')
-    parser.add_argument('--sub-dataset', type=str, default='FD001', help='FD001/3')
+    parser.add_argument('--dataset-root', type=str, default='D:\\Datasets\\CMAPSS',  help='The dir of CMAPSS dataset')
+    parser.add_argument('--sub-dataset', type=str, default='FD003', help='FD001/3')
     parser.add_argument('--norm-type', type=str, default='z-score', help='z-score, -1-1 or 0-1')  # done
     parser.add_argument('--max-rul', type=int, default=125, help='piece-wise RUL upper limit')  # done
     parser.add_argument('--cluster-operations', action='store_true', default=False)
